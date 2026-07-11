@@ -325,7 +325,7 @@ def ai_advisor(
           api_key="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"
         )
         
-        prompt = f"""You are an expert Injection Molding AI.
+        prompt = f"""You are an expert Injection Molding DFM (Design for Manufacturing) and Mold Flow Analysis AI.
         Part Data:
         - Dimensions: {extents_x:.2f} x {extents_y:.2f} x {extents_z:.2f} mm
         - Volume: {volume:.2f} mm³
@@ -335,15 +335,22 @@ def ai_advisor(
         - Selected Material: {material}
         - Annual Production Volume: {production_volume} units
 
-        Provide a structured manufacturing report with the following markdown sections:
-        ### 1. Cost & Time Estimation
-        Estimate the steel mold tooling cost ($ USD), per-part cost ($ USD), and estimated cycle time (seconds). Be realistic based on the volume and material.
+        Provide a strict, professional DFM and Mold Flow report. Do not include unwanted conversational text. Use the following markdown sections:
 
-        ### 2. Defect Risk Analysis
-        Analyze the draft angle warning percentage and thickness risks (sink marks, warpage) for {material}.
+        ### 1. DFM Guidelines Check
+        Evaluate the part for standard DFM rules:
+        - **Draft Angles:** Analyze the {draft_warning_pct:.1f}% draft warning.
+        - **Corner Radii (Rounds):** Explain why sharp corners must be filleted for {material} to reduce stress concentrations.
+        - **Uniform Thickness:** Discuss how non-uniform thickness in a {max(extents_x, extents_y):.0f}mm part leads to warpage and sink marks.
 
-        ### 3. Tooling & Cooling Optimization
-        Discuss if sliders/lifters are needed for the {undercut_count} undercuts, and recommend a shrinkage scale factor for {material}.
+        ### 2. AI Mold Flow Analysis
+        Act as a Mold Flow simulator. Based on the dimensions and {material} properties:
+        - Recommend the optimal gate type and location to ensure balanced filling.
+        - Predict potential weld lines or air traps.
+        - Estimate injection pressure and cooling cycle time.
+
+        ### 3. Tooling Cost & Optimization
+        Estimate steel mold cost ($ USD) and per-part cost. Discuss if sliders/lifters are needed for the {undercut_count} undercuts.
         """
 
         def generate():
