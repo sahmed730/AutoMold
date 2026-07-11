@@ -322,7 +322,8 @@ def ai_advisor(
     try:
         client = OpenAI(
           base_url="https://integrate.api.nvidia.com/v1",
-          api_key="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"
+          api_key="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",
+          timeout=10.0
         )
         
         prompt = f"""You are an expert Injection Molding DFM (Design for Manufacturing) and Mold Flow Analysis AI.
@@ -354,17 +355,20 @@ def ai_advisor(
         """
 
         def generate():
-            completion = client.chat.completions.create(
-              model="z-ai/glm-5.2",
-              messages=[{"role":"user","content": prompt}],
-              temperature=0.7,
-              top_p=1,
-              max_tokens=800,
-              stream=True
-            )
-            for chunk in completion:
-                if chunk.choices and chunk.choices[0].delta.content:
-                    yield chunk.choices[0].delta.content
+            try:
+                completion = client.chat.completions.create(
+                  model="meta/llama-3.1-70b-instruct",
+                  messages=[{"role":"user","content": prompt}],
+                  temperature=0.7,
+                  top_p=1,
+                  max_tokens=800,
+                  stream=True
+                )
+                for chunk in completion:
+                    if chunk.choices and chunk.choices[0].delta.content:
+                        yield chunk.choices[0].delta.content
+            except Exception as e:
+                yield f'{{"error": "{str(e)}"}}'
 
         return StreamingResponse(generate(), media_type="text/plain")
     except Exception as e:
