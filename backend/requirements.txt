@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+python-multipart
+trimesh
+numpy
+scipy
+openai
+python-dotenv
